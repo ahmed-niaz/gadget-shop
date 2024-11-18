@@ -15,8 +15,6 @@ app.use(
 );
 app.use(express.json());
 
-
-
 // mongodb
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@clusterone.lxvfmw8.mongodb.net/?retryWrites=true&w=majority&appName=ClusterOne`;
 
@@ -35,6 +33,33 @@ app.post("/jwt", async (req, res) => {
   });
   res.send({ token });
 });
+
+// token verification
+const verifyToken = (req, res, next) => {
+  const authorization = req.headers.authorization;
+  if (!authorization) {
+    return res.send({ message: "No token" });
+  }
+
+  const token = authorization.split(" ")[1];
+  jwt.verify(token, process.env.JWT_TOKEN, (err, decoded) => {
+    if (err) {
+      return res.send({ message: "invalid token" });
+    }
+    req.decoded = decoded; 
+    next();
+  });
+};
+
+// verify seller
+const verifySeller = async (req, res, next) => {
+  const query = { email: req.decoded.email };
+  const user = await userCollection.findOne(query);
+  if (user?.role !== "seller") {
+    return res.send({ message: "as seller forbidden access" });
+  }
+  next();
+};
 
 const userCollection = client.db("gadget-shop").collection("users");
 const productCollection = client.db("gadget-shop").collection("product");
@@ -68,7 +93,7 @@ const dbConnect = async () => {
     });
 
     // add product
-    app.post("/add-products", async (req, res) => {
+    app.post("/add-products", verifyToken, verifySeller, async (req, res) => {
       try {
         const product = req.body;
         const result = await productCollection.insertOne(product);

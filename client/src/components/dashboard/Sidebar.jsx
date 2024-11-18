@@ -32,7 +32,7 @@ const Sidebar = () => {
   return (
     <main className="bg-slate-100 border-r-2 border-black min-h-screen px-8 py-12">
       <h2 className="text-3xl font-bold">Gadget shop</h2>
-      <ul className="py-6 ">
+      <ul className="py-6 md:items-center">
         <li className="btn btn-outline bg-black text-white  w-3/4 mb-4">
           <Link to="/dashboard/overview" className="flex items-center  gap-2">
             <span>
