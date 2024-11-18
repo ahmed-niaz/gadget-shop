@@ -7,8 +7,15 @@ const { MongoClient, ServerApiVersion } = require("mongodb");
 const port = process.env.PORT || 3000;
 
 // middleware
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    optionsSuccessStatus: 200,
+  })
+);
 app.use(express.json());
+
+
 
 // mongodb
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@clusterone.lxvfmw8.mongodb.net/?retryWrites=true&w=majority&appName=ClusterOne`;
@@ -36,6 +43,40 @@ const dbConnect = async () => {
   try {
     client.connect();
     console.log(`Database connected successfully`);
+
+    // get all the user
+    app.get("/user", async (req, res) => {
+      try {
+        const result = await userCollection.find().toArray();
+        res.status(200).send(result.data);
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+    });
+
+    // get user based on email
+    app.get("/user/:email", async (req, res) => {
+      try {
+        const query = { email: req.params.email };
+        const result = await userCollection.findOne(query);
+        res.status(200).send(result);
+      } catch (error) {
+        console.error("Error fetching user data:", error.message);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+    });
+
+    // add product
+    app.post("/add-products", async (req, res) => {
+      try {
+        const product = req.body;
+        const result = await productCollection.insertOne(product);
+        res.send(result);
+      } catch (err) {
+        console.error("Error fetching user data:", err.message);
+      }
+    });
 
     // insert user
     app.post("/users", async (req, res) => {

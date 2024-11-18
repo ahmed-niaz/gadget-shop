@@ -93,7 +93,10 @@ const Login = () => {
               <button className="btn btn-primary">Login</button>
             </div>
             <hr />
+            <div className="form-control mt-6">
             <GoogleLogin />
+            </div>
+           
             <p className="my-4 text-gray-400">
               already have an account? <Link to="/register">Register</Link>
             </p>

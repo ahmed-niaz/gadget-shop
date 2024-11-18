@@ -8,7 +8,7 @@ const DashboardLayout = () => {
         <section className="col-span-2">
             <Sidebar/>
         </section>
-        <section className="col-span-10">
+        <section className="col-span-10 p-12">
             <Outlet/>
         </section>
     </main>

@@ -8,6 +8,11 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
 import DashboardLayout from "../layouts/DashboardLayout";
+import PrivateRoutes from "./PrivateRoutes";
+import Overview from "../pages/dashboard/Overview";
+import { MyProduct } from "../pages/dashboard/seller/MyProduct";
+import AddProduct from "../pages/dashboard/seller/AddProduct";
+import SellerRoutes from "./SellerRoutes";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -34,7 +39,41 @@ export const router = createBrowserRouter([
   { path: "/login", element: <Login /> },
   { path: "/register", element: <Register /> },
   {
-    path: '/dashboard',
-    element: <DashboardLayout/>,
-  }
+    path: "/dashboard",
+    element: (
+      <PrivateRoutes>
+        <DashboardLayout />
+      </PrivateRoutes>
+    ),
+    children: [
+      {
+        path: "/dashboard/overview",
+        element: (
+          <PrivateRoutes>
+            <Overview />
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/dashboard/my-products",
+        element: (
+          <PrivateRoutes>
+            <SellerRoutes>
+              <MyProduct />
+            </SellerRoutes>
+          </PrivateRoutes>
+        ),
+      },
+      {
+        path: "/dashboard/add-products",
+        element: (
+          <PrivateRoutes>
+            <SellerRoutes>
+              <AddProduct />
+            </SellerRoutes>
+          </PrivateRoutes>
+        ),
+      },
+    ],
+  },
 ]);
