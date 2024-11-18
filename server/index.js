@@ -46,7 +46,7 @@ const verifyToken = (req, res, next) => {
     if (err) {
       return res.send({ message: "invalid token" });
     }
-    req.decoded = decoded; 
+    req.decoded = decoded;
     next();
   });
 };
@@ -87,6 +87,16 @@ const dbConnect = async () => {
         const result = await userCollection.findOne(query);
         res.status(200).send(result);
       } catch (error) {
+        console.error("Error fetching user data:", error.message);
+        res.status(500).send({ message: "Internal Server Error" });
+      }
+    });
+
+    app.get("/product", async (req, res) => {
+      try {
+        const result = await productCollection.find().toArray();
+        res.status(200).send(result);
+      } catch (err) {
         console.error("Error fetching user data:", error.message);
         res.status(500).send({ message: "Internal Server Error" });
       }

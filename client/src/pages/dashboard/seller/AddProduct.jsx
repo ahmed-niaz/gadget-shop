@@ -42,6 +42,7 @@ const AddProduct = () => {
     const stock = parseFloat(data.stock);
     const category = data.category;
     const image = data.image_url;
+    const description = data.description;
     const sellerEmail = user?.email;
     const productList = {
       title,
@@ -50,6 +51,7 @@ const AddProduct = () => {
       stock,
       category,
       image,
+      description,
       sellerEmail,
     };
 
