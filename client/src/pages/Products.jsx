@@ -6,7 +6,7 @@ import ProductCard from "../components/shared/ProductCard";
 import FilterBar from "../components/products/FilterBar";
 import SearchBar from "../components/products/SearchBar";
 import SortByPrice from "../components/products/SortByPrice";
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 
 const Products = () => {
   const [search, setSearch] = useState("");
@@ -14,23 +14,23 @@ const Products = () => {
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
 
-  // Log filter values whenever they change
-  useEffect(() => {
-    console.log('search',search);
-    console.log("Sort:", sort);
-    console.log("Brand:", brand);
-    console.log("Category:", category);
-  }, [search,sort, brand, category]);
 
-  const { data: products, isLoading } = useQuery({
-    queryKey: ["products"], // Corrected query key as a string
+  console.log(category);
+
+  const { data, isLoading } = useQuery({
+    queryKey: [search, sort, brand, category], // Corrected query key as a string
     queryFn: async () => {
       const response = await axios.get(
-        `${import.meta.env.VITE_API_URL}/all-products`
+        `${
+          import.meta.env.VITE_API_URL
+        }/all-products?title=${search}&sort=${sort}&brand=${brand}&category=${category}`
       );
+      console.log(response.data);
+
       return response.data;
-    },
+    }
   });
+
   if (isLoading) return <Loading />;
   // handle search
   const handleSearch = (e) => {
@@ -45,7 +45,6 @@ const Products = () => {
     setSearch("");
     setCategory("");
     setSort("asc");
-    window.location.reload()
   };
 
   return (
@@ -66,18 +65,20 @@ const Products = () => {
             setBrand={setBrand}
             setCategory={setCategory}
             handleReset={handleReset}
+            brands = {data.brands}
+            categories = {data.categories}
           />
         </div>
         <div className="col-span-10 px-8">
           <section>
-            {products.length === 0 ? (
+            {!data || !data.products || data.products.length === 0 ? (
               <div className="grid place-items-center w-full min-h-screen text-2xl font-extrabold">
                 <h2>No Product Found</h2>
               </div>
             ) : (
               <div className="grid grid-cols-3 gap-4">
-                {products.map((product, idx) => (
-                  <ProductCard key={idx} product={product} />
+                {data.products.map((product) => (
+                  <ProductCard key={product._id} product={product} />
                 ))}
               </div>
             )}
