@@ -17,7 +17,7 @@ const FeaturedProducts = () => {
   if (isLoading) return <Loading />;
 console.log(products);
   return (
-    <section className="lg:flex items-center justify-between gap-4">
+    <section className="grid grid-cols-3 gap-4">
       {products.map((product) => (
         <ProductCard key={product.id} product={product} />
       ))}
